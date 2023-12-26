@@ -1,7 +1,8 @@
 ﻿using API.Data;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace API;
+namespace API.Extensions;
 
 public static class ApplicationServiceExtensions
 {
