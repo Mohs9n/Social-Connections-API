@@ -1,4 +1,5 @@
 using API.Extensions;
+using API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,7 @@ var app = builder.Build();
 
 // app.UseCors(builder => builder.AllowAnyHeader().WithOrigins("https://hoppscotch.io"));
 // app.UseCors(corsBuilder => corsBuilder.AllowAnyHeader());
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(corsBuilder => corsBuilder.AllowAnyHeader().AllowAnyMethod());
 
 app.UseAuthentication();
