@@ -1,8 +1,8 @@
 ﻿using API.Entities;
 
-namespace API;
+namespace API.Services;
 
 public interface ITokenService
 {
-    string CreateToken(AppUser user);
+    Task<string> CreateToken(AppUser user);
 }
