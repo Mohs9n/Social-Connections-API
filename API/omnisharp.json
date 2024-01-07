@@ -5,7 +5,7 @@
   "RoslynExtensionsOptions": {
     "enableImportCompletion": true,
     "enableAnalyzersSupport": true,
-    "diagnosticWorkersThreadCount": 10
+    "diagnosticWorkersThreadCount": 12
   },
   "inlayHintsOptions": {
     "enableForParameters": true,

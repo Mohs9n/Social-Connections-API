@@ -2,6 +2,7 @@ using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.Middleware;
+using API.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ var app = builder.Build();
 // app.UseCors(builder => builder.AllowAnyHeader().WithOrigins("https://hoppscotch.io"));
 // app.UseCors(corsBuilder => corsBuilder.AllowAnyHeader());
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors(corsBuilder => corsBuilder.AllowAnyHeader().AllowAnyMethod());
+app.UseCors(corsBuilder => corsBuilder.AllowAnyHeader().AllowCredentials().AllowAnyMethod());
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -27,6 +28,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/message");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -36,6 +39,7 @@ try
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     await context.Database.MigrateAsync();
+    await context.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
     await Seed.SeedUsers(userManager, roleManager);
 }
 catch(Exception ex)
