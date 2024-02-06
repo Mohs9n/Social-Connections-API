@@ -20,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
 
     public ILikesRepository LikesRepository => new LikesRepository(_dataContext);
 
+    public IPhotoRepository PhotoRepository => new PhotoRepository(_dataContext, _mapper);
+
     public async Task<bool> Complete()
     {
         return await _dataContext.SaveChangesAsync() > 0;

@@ -47,9 +47,4 @@ catch(Exception ex)
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "An error occured during migration");
 }
-Console.WriteLine();
-Console.WriteLine("https://localhost:5001");
-Console.WriteLine();
-Console.WriteLine("Server is listening on prot 5001");
-Console.WriteLine();
 app.Run();

@@ -1,4 +1,3 @@
-using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
@@ -14,11 +13,11 @@ namespace API.Controllers;
 [Authorize]
 public class UsersController : BaseApiController
 {
-    private readonly UnitOfWork _uow;
+    private readonly IUnitOfWork _uow;
     private readonly IMapper _mapper;
     private readonly IPhotoService _photoService;
 
-    public UsersController(UnitOfWork uow, IMapper mapper, IPhotoService photoService)
+    public UsersController(IUnitOfWork uow, IMapper mapper, IPhotoService photoService)
     {
         _uow = uow;
         _mapper = mapper;
@@ -44,7 +43,7 @@ public class UsersController : BaseApiController
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDTO>> GetUser(string username)
     {
-        return await _uow.UserRepository.GetMemberAsync(username);
+        return await _uow.UserRepository.GetMemberAsync(username, User.GetUsername());
     }
 
     [HttpPut]
@@ -73,7 +72,8 @@ public class UsersController : BaseApiController
             PublicId = result.PublicId
         };
 
-        if (user.Photos.Count == 0 )photo.IsMain = true;
+        // await approval before setting photo to main
+        // if (user.Photos.Count == 0 )photo.IsMain = true;
 
         user.Photos.Add(photo);
 
@@ -110,7 +110,7 @@ public class UsersController : BaseApiController
     {
         var user = await _uow.UserRepository.GetUserByUsernameAsync(User.GetUsername());
 
-        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        var photo = await _uow.PhotoRepository.GetPhotoByIdAsync(photoId);
 
         if (photo == null) return NotFound();
 

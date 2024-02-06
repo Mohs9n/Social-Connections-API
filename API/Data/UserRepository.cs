@@ -18,11 +18,14 @@ public class UserRepository : IUserRepository
         _mapper = mapper;
     }
 
-    public async Task<MemberDTO> GetMemberAsync(string username)
+    public async Task<MemberDTO> GetMemberAsync(string username, string loggedInUsername)
     {
-        return await _context.Users.Where(x => x.UserName == username)
+        
+        var query = _context.Users.Where(x => x.UserName == username)
                 .ProjectTo<MemberDTO>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .AsQueryable();
+        if (username == loggedInUsername) query = query.IgnoreQueryFilters();
+        return await query.SingleOrDefaultAsync();
     }
 
     public async Task<PagedList<MemberDTO>> GetMembersAsync(UserParams userParams)
